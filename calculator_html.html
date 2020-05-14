@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body,
+      .btn {
+        font-size: 2rem;
+      }
+      main {
+        max-width: 300px;
+        margin: 0 auto;
+        background: #121212;
+        color: cornsilk;
+      }
+      .btn {
+        width: 99%;
+        border: none;
+        margin: 1px;
+        padding: 12px 0;
+        background: #d8d9db;
+        cursor: pointer;
+      }
+      .btn:hover {
+        background: #ebebeb;
+      }
+      .btn:active {
+        background-color: #bbbcbe;
+      }
+      .first-line {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+      }
+      .main-body {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+      }
+      .last-line {
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+      }
+      .ui {
+        display: flex;
+        justify-content: flex-end;
+        background: #121212;
+        padding: 12px 6px;
+      }
+      .output {
+        margin-right: 0.3em;
+      }
+      .op {
+        background: #df974c;
+      }
+      .op:hover {
+        background: #dfb07e;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="ui">
+        <div class="output" id="output">
+          0
+        </div>
+      </div>
+      <div class="first-line">
+        <div class="clear">
+          <button class="btn" id="clear" onclick="solve('c')">C</button>
+        </div>
+        <div class="back">
+          <button class="btn" id="back" onclick="solve('b')">←</button>
+        </div>
+        <div class="divide">
+          <button class="btn op" id="divide" onclick="solve('/')">÷</button>
+        </div>
+      </div>
+      <div class="main-body">
+        <div class="seven">
+          <button class="btn" id="seven" onclick="solve('7')">7</button>
+        </div>
+        <div class="eight">
+          <button class="btn" id="eight" onclick="solve('8')">8</button>
+        </div>
+        <div class="nine">
+          <button class="btn" id="nine" onclick="solve('9')">9</button>
+        </div>
+        <div class="multiply">
+          <button class="btn op" id="multiply" onclick="solve('*')">x</button>
+        </div>
+        <div class="four">
+          <button class="btn" id="four" onclick="solve('4')">4</button>
+        </div>
+        <div class="five">
+          <button class="btn" id="five" onclick="solve('5')">5</button>
+        </div>
+        <div class="six">
+          <button class="btn" id="six" onclick="solve('6')">6</button>
+        </div>
+        <div class="minus">
+          <button class="btn op" id="minus" onclick="solve('-')">-</button>
+        </div>
+        <div class="one">
+          <button class="btn" id="one" onclick="solve('1')">1</button>
+        </div>
+        <div class="two">
+          <button class="btn" id="two" onclick="solve('2')">2</button>
+        </div>
+        <div class="three">
+          <button class="btn" id="three" onclick="solve('3')">3</button>
+        </div>
+        <div class="plus">
+          <button class="btn op" id="plus" onclick="solve('+')">+</button>
+        </div>
+      </div>
+      <div class="last-line">
+        <div class="zero">
+          <button class="btn" onclick="solve('0')">0</button>
+        </div>
+        <div class="equal">
+          <button class="btn op" onclick="solve('equal')">=</button>
+        </div>
+      </div>
+    </main>
+    <script>
+      let runningTotal = 0;
+      let buffer = "0";
+      let previousOp = null;
+      function solve(val) {
+        if (!isNaN(val)) {
+          handleNumber(val);
+        } else {
+          handleOp(val);
+        }
+      }
+      function handleNumber(val) {
+        if (buffer === "0") {
+          buffer = val;
+        } else {
+          buffer += val;
+        }
+        rerender();
+      }
+
+      function rerender() {
+        document.getElementById("output").innerHTML = buffer;
+      }
+      function handleOp(val) {
+        switch (val) {
+          case "c":
+            runningTotal = 0;
+            buffer = "0";
+            previousOp = null;
+            break;
+          case "b":
+            if (buffer.length === 1) {
+              buffer = "0";
+            } else {
+              buffer = buffer.substring(0, buffer.length - 1);
+            }
+            break;
+          case "=":
+            if (previousOp === null) {
+              return;
+            }
+            flushoperation(parseInt(buffer));
+            previousOp = null;
+            buffer = "" + runningTotal;
+            console.log(runningTotal);
+            runningTotal = 0;
+            break;
+          default:
+            handlemath(val);
+            break;
+        }
+
+        rerender();
+      }
+      function handlemath(val) {
+        let intbuffer = parseInt(buffer);
+        if (runningTotal === 0) {
+          runningTotal = intbuffer;
+        } else {
+          flushoperation(intbuffer);
+        }
+        previousOp = val;
+        buffer = 0;
+      }
+      function flushoperation(intbuffer) {
+        if (previousOp === "+") {
+          runningTotal += intbuffer;
+        }
+        if (previousOp === "*") {
+          runningTotal *= intbuffer;
+        }
+        if (previousOp === "/") {
+          runningTotal /= intbuffer;
+        }
+        if (previousOp === "-") {
+          runningTotal -= intbuffer;
+        }
+      }
+    </script>
+  </body>
+</html>
