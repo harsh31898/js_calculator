@@ -135,10 +135,14 @@
         }
       }
       function handleNumber(val) {
-        if (buffer === "0") {
+        let sub = buffer.toString().substring(0, 1);
+        if (buffer === "0" || sub === "0") {
+          console.log(buffer, "up");
           buffer = val;
         } else {
           buffer += val;
+          // console.log(buffer, "down");
+          // console.log(buffer.substring(0, 1));
         }
         rerender();
       }
@@ -160,11 +164,13 @@
               buffer = buffer.substring(0, buffer.length - 1);
             }
             break;
-          case "=":
+          case "equal":
+            console.log("equal runs yeah");
             if (previousOp === null) {
               return;
             }
             flushoperation(parseInt(buffer));
+            // console.log("buffer is ", buffer);
             previousOp = null;
             buffer = "" + runningTotal;
             console.log(runningTotal);
@@ -180,7 +186,9 @@
       function handlemath(val) {
         let intbuffer = parseInt(buffer);
         if (runningTotal === 0) {
+          // console.log("in handlebuffer");
           runningTotal = intbuffer;
+          console.log(runningTotal);
         } else {
           flushoperation(intbuffer);
         }
@@ -188,17 +196,22 @@
         buffer = 0;
       }
       function flushoperation(intbuffer) {
+        // console.log("inside flush op function");
         if (previousOp === "+") {
           runningTotal += intbuffer;
+          console.log(runningTotal);
         }
         if (previousOp === "*") {
           runningTotal *= intbuffer;
+          console.log(runningTotal);
         }
         if (previousOp === "/") {
           runningTotal /= intbuffer;
+          console.log(runningTotal);
         }
         if (previousOp === "-") {
           runningTotal -= intbuffer;
+          console.log(runningTotal);
         }
       }
     </script>
